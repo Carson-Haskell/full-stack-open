@@ -9,13 +9,17 @@ sequenceDiagram
   browser->>server: POST https://fullstack-exampleapp.herokuapp.herokuapp.com/new_note
   activate server
 
-  Note right of browser: The server responds with a redirect which sends a new GET request to the address defined in the headers location
+  Note right of browser: The server responds with a redirect which asks the browser to do a new GET request
 
-  server->>server: GET /notes
+  server->>browser: 302 REDIRECT "/notes"
+  deactivate server
+
+  browser->>server: GET https://fullstack-exampleapp.herokuapp.herokuapp.com/notes
+  activate server
   server-->>browser: HTML document
   deactivate server
 
-  Note right of browser: reloading the html page means the browser must refetch everything in html
+  Note right of browser: reloading the html page means the browser must refetch all neccessary files/data
 
   browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
   activate server
