@@ -1,3 +1,3 @@
 # Full Stack Open
 
-## Submissions for part 1 exercises
+## Submission for part 1 exercise: courseinfo: 1.1-1.2
