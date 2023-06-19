@@ -6,6 +6,7 @@ const Statistics = ({
   average,
   positiveFeedback,
 }) => {
+  if (total === 0) return <p>No feedback given</p>;
   return (
     <>
       <h2>Statistics</h2>
@@ -18,7 +19,7 @@ const Statistics = ({
         Positive Ratings:{" "}
         {positiveFeedback > 0
           ? `${positiveFeedback.toFixed(2)}%`
-          : "No ratings given"}
+          : "No positive reviews"}
       </p>
     </>
   );
