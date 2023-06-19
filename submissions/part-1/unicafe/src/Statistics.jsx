@@ -10,19 +10,28 @@ const Statistics = ({ good, neutral, bad }) => {
   return (
     <>
       <h2>Statistics</h2>
-      <StatisticLine text="Good" value={good} />
-      <StatisticLine text="Neutral" value={neutral} />
-      <StatisticLine text="Bad" value={bad} />
-      <StatisticLine text="Total Ratings" value={total} />
-      <StatisticLine text="Average Rating" value={average.toFixed(2)} />
-      <StatisticLine
-        text="Positive Ratings"
-        value={
-          positiveRatings > 0
-            ? `${positiveRatings.toFixed(2)}%`
-            : "No positive reviews"
-        }
-      />
+      <table>
+        <tbody>
+          <StatisticLine text="Good" value={good} />
+
+          <StatisticLine text="Neutral" value={neutral} />
+
+          <StatisticLine text="Bad" value={bad} />
+
+          <StatisticLine text="Total Ratings" value={total} />
+
+          <StatisticLine text="Average Rating" value={average.toFixed(2)} />
+
+          <StatisticLine
+            text="Positive Ratings"
+            value={
+              positiveRatings > 0
+                ? `${positiveRatings.toFixed(2)}%`
+                : "No positive reviews"
+            }
+          />
+        </tbody>
+      </table>
     </>
   );
 };
