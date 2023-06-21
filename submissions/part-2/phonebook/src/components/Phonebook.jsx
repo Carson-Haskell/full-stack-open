@@ -4,12 +4,14 @@ import personServices from "../services/personServices";
 import Filter from "./Filter";
 import NewPerson from "./NewPerson";
 import People from "./People";
+import Notification from "./Notification";
 
 const Phonebook = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personServices.getAll().then(personData => setPersons(personData));
@@ -38,10 +40,15 @@ const Phonebook = () => {
       return;
     }
 
-    console.log("not here");
-
     personServices.createPerson(newPerson).then(createdPerson => {
       setPersons([...persons, createdPerson]);
+
+      // Briefly show successful creation notification
+      setMessage(`Added ${createdPerson.name}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 2000);
+
       setNewName("");
       setNewNumber("");
     });
@@ -59,6 +66,13 @@ const Phonebook = () => {
             person.id !== updatedPerson.id ? person : updatedPerson
           )
         );
+
+        // Briefly show successful update message
+        setMessage(`Updated ${updatedPerson.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 2000);
+
         setNewName("");
         setNewNumber("");
       });
@@ -76,6 +90,12 @@ const Phonebook = () => {
       personServices
         .deletePerson(id)
         .then(_ => setPersons(persons.filter(person => person.id !== id)));
+
+      // Briefly show successful creation notification
+      setMessage(`Deleted ${person.name}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 2000);
     }
   };
 
@@ -95,6 +115,7 @@ const Phonebook = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message} />
 
       <Filter filter={filter} setFilter={setFilter} />
 
