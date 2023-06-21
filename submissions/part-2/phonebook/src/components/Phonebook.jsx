@@ -44,10 +44,7 @@ const Phonebook = () => {
       setPersons([...persons, createdPerson]);
 
       // Briefly show successful creation notification
-      setMessage(`Added ${createdPerson.name}`);
-      setTimeout(() => {
-        setMessage(null);
-      }, 2000);
+      alert(`Added ${createdPerson.name}`, "success");
 
       setNewName("");
       setNewNumber("");
@@ -60,22 +57,28 @@ const Phonebook = () => {
       `${newName} is already added to phonebook, do you want to update their phone number?`
     );
     if (updateConfirmed) {
-      personServices.update(oldPerson.id, newPerson).then(updatedPerson => {
-        setPersons(
-          persons.map(person =>
-            person.id !== updatedPerson.id ? person : updatedPerson
-          )
-        );
+      personServices
+        .update(oldPerson.id, newPerson)
+        .then(updatedPerson => {
+          setPersons(
+            persons.map(person =>
+              person.id !== updatedPerson.id ? person : updatedPerson
+            )
+          );
 
-        // Briefly show successful update message
-        setMessage(`Updated ${updatedPerson.name}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 2000);
+          // Briefly show successful update message
+          alert(`Updated ${updatedPerson.name}`, "success");
+        })
+        .catch(_ => {
+          alert(
+            `Information of ${newPerson.name} has already been removed from the server`,
+            "error"
+          );
+          personServices.getAll().then(peopleData => setPersons(peopleData));
+        });
 
-        setNewName("");
-        setNewNumber("");
-      });
+      setNewName("");
+      setNewNumber("");
     }
   };
 
@@ -92,11 +95,15 @@ const Phonebook = () => {
         .then(_ => setPersons(persons.filter(person => person.id !== id)));
 
       // Briefly show successful creation notification
-      setMessage(`Deleted ${person.name}`);
-      setTimeout(() => {
-        setMessage(null);
-      }, 2000);
+      alert(`Deleted ${person.name}`, "success");
     }
+  };
+
+  const alert = (content, type) => {
+    setMessage({ content, type });
+    setTimeout(() => {
+      setMessage(null);
+    }, 3000);
   };
 
   // Search for a person
