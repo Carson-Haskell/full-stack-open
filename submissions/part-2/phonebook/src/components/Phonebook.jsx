@@ -24,24 +24,45 @@ const Phonebook = () => {
       return;
     }
 
-    // Ensure person doesn't already exist
-    const duplicate = persons.find(person => person.name === newName);
-    if (duplicate) {
-      alert(`${newName} is already added to phonebook`);
-      setNewName("");
-      return;
-    }
-
     const newPerson = {
       name: newName,
       number: newNumber,
     };
 
-    personServices.createPerson(newPerson).then(returnedPerson => {
-      setPersons([...persons, returnedPerson]);
+    // If person already exists, optionally update phone number
+    const duplicate = persons.find(person => person.name === newName);
+
+    if (duplicate) {
+      updateNumber(duplicate, newPerson);
+
+      return;
+    }
+
+    console.log("not here");
+
+    personServices.createPerson(newPerson).then(createdPerson => {
+      setPersons([...persons, createdPerson]);
       setNewName("");
       setNewNumber("");
     });
+  };
+
+  // Update phone number of preexisting user
+  const updateNumber = (oldPerson, newPerson) => {
+    const updateConfirmed = window.confirm(
+      `${newName} is already added to phonebook, do you want to update their phone number?`
+    );
+    if (updateConfirmed) {
+      personServices.update(oldPerson.id, newPerson).then(updatedPerson => {
+        setPersons(
+          persons.map(person =>
+            person.id !== updatedPerson.id ? person : updatedPerson
+          )
+        );
+        setNewName("");
+        setNewNumber("");
+      });
+    }
   };
 
   const deletePerson = id => {
@@ -51,11 +72,11 @@ const Phonebook = () => {
       `Are you sure you want to delete ${person.name}?`
     );
 
-    if (!deleteConfirmed) return;
-
-    personServices
-      .deletePerson(id)
-      .then(_ => setPersons(persons.filter(person => person.id !== id)));
+    if (deleteConfirmed) {
+      personServices
+        .deletePerson(id)
+        .then(_ => setPersons(persons.filter(person => person.id !== id)));
+    }
   };
 
   // Search for a person
