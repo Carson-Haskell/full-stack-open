@@ -37,9 +37,18 @@ const Phonebook = () => {
       number: newNumber,
     };
 
-    setPersons([...persons, newPerson]);
-    setNewName("");
-    setNewNumber("");
+    axios
+      .post("http://localhost:3001/persons", newPerson)
+      .then(res => {
+        setPersons([...persons, res.data]);
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch(error => console.log(error));
+
+    // setPersons([...persons, newPerson]);
+    // setNewName("");
+    // setNewNumber("");
   };
 
   const checkDuplicate = name => persons.find(person => person.name === name);
