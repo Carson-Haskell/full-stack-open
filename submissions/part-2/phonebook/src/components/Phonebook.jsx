@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import personServices from "../services/personServices";
 
 import Filter from "./Filter";
 import NewPerson from "./NewPerson";
@@ -12,9 +12,7 @@ const Phonebook = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(res => setPersons(res.data));
+    personServices.getAll(personData => setPersons(personData));
   }, []);
 
   const addPerson = event => {
@@ -37,18 +35,11 @@ const Phonebook = () => {
       number: newNumber,
     };
 
-    axios
-      .post("http://localhost:3001/persons", newPerson)
-      .then(res => {
-        setPersons([...persons, res.data]);
-        setNewName("");
-        setNewNumber("");
-      })
-      .catch(error => console.log(error));
-
-    // setPersons([...persons, newPerson]);
-    // setNewName("");
-    // setNewNumber("");
+    personServices.createPerson(newPerson).then(returnedPerson => {
+      setPersons([...persons, returnedPerson]);
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const checkDuplicate = name => persons.find(person => person.name === name);
