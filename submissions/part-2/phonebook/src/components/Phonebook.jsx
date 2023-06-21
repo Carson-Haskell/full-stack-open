@@ -12,9 +12,10 @@ const Phonebook = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    personServices.getAll(personData => setPersons(personData));
+    personServices.getAll().then(personData => setPersons(personData));
   }, []);
 
+  // Create new person
   const addPerson = event => {
     event.preventDefault();
 
@@ -23,7 +24,8 @@ const Phonebook = () => {
       return;
     }
 
-    const duplicate = checkDuplicate(newName);
+    // Ensure person doesn't already exist
+    const duplicate = persons.find(person => person.name === newName);
     if (duplicate) {
       alert(`${newName} is already added to phonebook`);
       setNewName("");
@@ -42,8 +44,21 @@ const Phonebook = () => {
     });
   };
 
-  const checkDuplicate = name => persons.find(person => person.name === name);
+  const deletePerson = id => {
+    const person = persons.find(person => person.id === id);
 
+    const deleteConfirmed = window.confirm(
+      `Are you sure you want to delete ${person.name}?`
+    );
+
+    if (!deleteConfirmed) return;
+
+    personServices
+      .deletePerson(id)
+      .then(_ => setPersons(persons.filter(person => person.id !== id)));
+  };
+
+  // Search for a person
   const filterByName = () => {
     const filtered = persons.filter(person => {
       const name = person.name.toLowerCase();
@@ -53,6 +68,7 @@ const Phonebook = () => {
     return filtered;
   };
 
+  // Returns all if search input is undefined
   const filteredPeople = filterByName();
 
   return (
@@ -71,7 +87,7 @@ const Phonebook = () => {
       />
 
       <h2>Numbers</h2>
-      <People people={filteredPeople} />
+      <People people={filteredPeople} handleDelete={deletePerson} />
       <br />
     </div>
   );
