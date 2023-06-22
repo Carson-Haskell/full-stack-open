@@ -61,11 +61,28 @@ app.delete("/api/people/:id", (req, res) => {
   res.status(204).end();
 });
 
+const checkDuplicate = name => people.some(person => person.name === name);
+
 app.post("/api/people", (req, res) => {
-  const body = req.body;
+  const { name, number } = req.body;
+
+  if (!name || !number) {
+    return res.status(400).json({
+      error: "name and number required",
+    });
+  }
+
+  const duplicate = checkDuplicate(name);
+
+  if (duplicate) {
+    return res.status(400).json({
+      error: "name must be unique",
+    });
+  }
 
   const person = {
-    name: body.name,
+    name,
+    number,
     id: Math.random(),
   };
 
